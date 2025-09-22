@@ -11,6 +11,7 @@ import { AddStudentModal } from "../components/AddStudentModal";
 import { StudentDetailsModal } from "../components/StudentDetailsModal";
 import { EditGroupModal } from "../components/EditGroupModal";
 import { EditStudentModal } from "../components/EditStudentModal";
+import { BulkRewardModal } from "../components/BulkRewardModal";
 
 export default function Page() {
   const [groups, setGroups] = useLocalStorage<Group[]>("finance-groups", []);
@@ -30,6 +31,7 @@ export default function Page() {
   const [showStudentDetails, setShowStudentDetails] = useState(false);
   const [showEditGroup, setShowEditGroup] = useState(false);
   const [showEditStudent, setShowEditStudent] = useState(false);
+  const [showAddAll, setShowAddAll] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 
@@ -55,7 +57,7 @@ export default function Page() {
       name,
       birthDate,
       balance: 0,
-      groupId: currentGroupId
+      groupId: currentGroupId,
     };
     setStudents((prev) => [...prev, newStudent]);
   };
@@ -66,7 +68,7 @@ export default function Page() {
   description: string) =>
   {
     const newTransaction: Transaction = {
-      id: Date.now().toString(),
+      id: Date.now().toString() + Math.random().toString(36),
       studentId,
       amount,
       type: amount >= 0 ? "add" : "subtract",
@@ -121,7 +123,42 @@ export default function Page() {
     }
   };
 
+  // 👇 Добавь эту функцию в тело компонента Page
+const handleApplyToAll = (amount: number, description: string) => {
+  if (!currentGroupId) return;
+
+  const studentsInGroup = students.filter(s => s.groupId === currentGroupId);
+
+  // Генерируем массив новых транзакций
+  const newTransactions: Transaction[] = studentsInGroup.map(student => ({
+    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+    studentId: student.id,
+    amount,
+    type: amount >= 0 ? "add" : "subtract",
+    description,
+    timestamp: new Date(),
+  }));
+  
+
+  // Создаем новый массив студентов с обновленными балансами
+  const updatedStudents = students.map(student => {
+    if (studentsInGroup.some(s => s.id === student.id)) {
+      return { ...student, balance: student.balance + amount };
+    }
+    return student;
+  });
+
+  // Применяем изменения одним махом
+  setTransactions(prev => [...prev, ...newTransactions]);
+  setStudents(updatedStudents);
+
+  alert(`Начислено ${amount} К ${studentsInGroup.length} студентам группы!`);
+  setShowAddAll(false);
+};
+
   if (currentGroupId && currentGroup) {
+    
+
     return (
       <div className="min-h-screen bg-gray-900 p-4" data-oid="8k330ln">
         <div className="max-w-4xl mx-auto" data-oid="5731kn-">
@@ -140,9 +177,16 @@ export default function Page() {
             <h1 className="text-2xl font-bold text-white" data-oid="nfh55sd">
               {currentGroup.name}
             </h1>
-            <Button onClick={() => setShowAddStudent(true)} data-oid="pn7et30">
-              + Ученик
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => setShowAddStudent(true)} data-oid="pn7et30">
+                + Ученик
+              </Button>
+
+              <Button onClick={() => setShowAddAll(true) }>
+                Начислить всем
+              </Button>
+            </div>
+            
           </div>
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -231,6 +275,13 @@ export default function Page() {
             ""
             }
             data-oid="_ujuvvz" />
+
+            <BulkRewardModal
+              isOpen={showAddAll}
+              onClose={() => setShowAddAll(false)}
+              onApplyToAll={handleApplyToAll}
+              data-oid="bulk-reward-modal"
+            />
 
       </div>);
 
