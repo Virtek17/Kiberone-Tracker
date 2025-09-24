@@ -1,3 +1,4 @@
+// Реализовать редактирование ученика и удаление, сделать loader
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -13,13 +14,21 @@ import { EditGroupModal } from "../components/EditGroupModal";
 import { EditStudentModal } from "../components/EditStudentModal";
 import { BulkRewardModal } from "../components/BulkRewardModal";
 import { toast } from "react-toastify";
+import useSound from "use-sound";
+import { useGroups } from "@/hooks/useGroups";
+import { useStudents } from "@/hooks/useStudents";
+
+const NOTIFICATION_SOUND = "/sound/notification.mp3";
 
 export default function Page() {
-  const [groups, setGroups] = useLocalStorage<Group[]>("finance-groups", []);
-  const [students, setStudents] = useLocalStorage<Student[]>(
-    "finance-students",
-    []
-  );
+  // const [groups, setGroups] = useLocalStorage<Group[]>("finance-groups", []);
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  // const [students, setStudents] = useLocalStorage<Student[]>(
+  //   "finance-students",
+  //   []
+  // );
+  const [students, setStudents] = useState<Student[]>([]);
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
     "finance-transactions",
     []
@@ -35,56 +44,114 @@ export default function Page() {
   const [showAddAll, setShowAddAll] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const { fetchGroups, createGroup, updateGroup, loading, error } = useGroups();
+  const {
+    fetchStudents,
+    createStudent,
+    loading: studentsLoading,
+  } = useStudents();
 
+  useEffect(() => {
+    const loadGroupsFromSupabase = async () => {
+      const data = await fetchGroups();
+      if (data) {
+        setGroups(data);
+      }
+    };
+    loadGroupsFromSupabase();
+  }, []);
+
+  useEffect(() => {
+    if (currentGroupId) {
+      fetchStudents(currentGroupId).then((data) => {
+        if (data) {
+          setStudents(data);
+        } else {
+          setStudents([]);
+        }
+      });
+    } else {
+      setStudents([]); // очищаем при выходе из группы
+    }
+  }, [currentGroupId, fetchStudents]);
   const currentGroup = groups.find((g) => g.id === currentGroupId);
   const currentGroupStudents = students.filter(
     (s) => s.groupId === currentGroupId
   );
 
+  // Звук для уведомления
+  const [playNotification] = useSound(NOTIFICATION_SOUND, {
+    volume: 0.4,
+  });
 
-  const createGroup = (name: string) => {
-    const newGroup: Group = {
-      id: Date.now().toString(),
-      name,
-      createdAt: new Date()
-    };
-    setGroups((prev) => [...prev, newGroup]);
+  // Старое создание группы
+  // const createGroup = (name: string) => {
+  //   const newGroup: Group = {
+  //     id: Date.now().toString(),
+  //     name,
+  //     createdAt: new Date(),
+  //   };
+  //   setGroups((prev) => [...prev, newGroup]);
+  // };
+
+  const handleCreateGroup = async (name: string) => {
+    const newGroup = await createGroup(name);
+    if (newGroup) {
+      setGroups((prev) => [...prev, newGroup]);
+      toast.success("Группа создана!");
+      playNotification();
+      setShowCreateGroup(false);
+    } else {
+      console.log("Ошибка");
+    }
   };
 
-  const addStudent = (name: string, birthDate: string) => {
+  // const addStudent = (name: string, birthDate: string) => {
+  //   if (!currentGroupId) return;
+
+  //   const newStudent: Student = {
+  //     id: Date.now().toString(),
+  //     name,
+  //     birthDate,
+  //     balance: 0,
+  //     groupId: currentGroupId,
+  //   };
+  //   setStudents((prev) => [...prev, newStudent]);
+  // };
+
+  const handleAddStudent = async (name: string, birthDate: string) => {
     if (!currentGroupId) return;
 
-    const newStudent: Student = {
-      id: Date.now().toString(),
-      name,
-      birthDate,
-      balance: 0,
-      groupId: currentGroupId,
-    };
-    setStudents((prev) => [...prev, newStudent]);
+    const newStudent = await createStudent(name, birthDate, currentGroupId);
+    if (newStudent) {
+      setStudents((prev) => [...prev, newStudent]);
+      toast.success("Ученик добавлен!");
+      playNotification();
+      setShowAddStudent(false);
+    }
   };
 
   const addTransaction = (
-  studentId: string,
-  amount: number,
-  description: string) =>
-  {
+    studentId: string,
+    amount: number,
+    description: string
+  ) => {
     const newTransaction: Transaction = {
       id: Date.now().toString() + Math.random().toString(36),
       studentId,
       amount,
       type: amount >= 0 ? "add" : "subtract",
       description,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     setTransactions((prev) => [...prev, newTransaction]);
     setStudents((prev) =>
-    prev.map((student) =>
-    student.id === studentId ?
-    { ...student, balance: student.balance + amount } :
-    student
-    )
+      prev.map((student) =>
+        student.id === studentId
+          ? { ...student, balance: student.balance + amount }
+          : student
+      )
     );
   };
 
@@ -93,21 +160,26 @@ export default function Page() {
     setTransactions((prev) => prev.filter((t) => t.studentId !== studentId));
   };
 
-  const updateGroup = (groupId: string, name: string) => {
-    setGroups((prev) =>
-    prev.map((group) => group.id === groupId ? { ...group, name } : group)
-    );
+  const handleUpdateGroup = async (groupId: string, name: string) => {
+    const success = await updateGroup(groupId, name);
+    if (success) {
+      setGroups((prev) =>
+        prev.map((g) => (g.id === groupId ? { ...g, name } : g))
+      );
+      toast.success("Группа обновлена!");
+      setShowEditGroup(false);
+    }
   };
 
   const updateStudent = (
-  studentId: string,
-  name: string,
-  birthDate: string) =>
-  {
+    studentId: string,
+    name: string,
+    birthDate: string
+  ) => {
     setStudents((prev) =>
-    prev.map((student) =>
-    student.id === studentId ? { ...student, name, birthDate } : student
-    )
+      prev.map((student) =>
+        student.id === studentId ? { ...student, name, birthDate } : student
+      )
     );
   };
 
@@ -126,121 +198,126 @@ export default function Page() {
   };
 
   // 👇 Добавь эту функцию в тело компонента Page
-const handleApplyToAll = (amount: number, description: string) => {
-  if (!currentGroupId) return;
+  const handleApplyToAll = (amount: number, description: string) => {
+    if (!currentGroupId) return;
 
-  const studentsInGroup = students.filter(s => s.groupId === currentGroupId);
+    const studentsInGroup = students.filter(
+      (s) => s.groupId === currentGroupId
+    );
 
-  // Генерируем массив новых транзакций
-  const newTransactions: Transaction[] = studentsInGroup.map(student => ({
-    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-    studentId: student.id,
-    amount,
-    type: amount >= 0 ? "add" : "subtract",
-    description,
-    timestamp: new Date(),
-  }));
-  
+    // Генерируем массив новых транзакций
+    const newTransactions: Transaction[] = studentsInGroup.map((student) => ({
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      studentId: student.id,
+      amount,
+      type: amount >= 0 ? "add" : "subtract",
+      description,
+      timestamp: new Date(),
+    }));
 
-  // Создаем новый массив студентов с обновленными балансами
-  const updatedStudents = students.map(student => {
-    if (studentsInGroup.some(s => s.id === student.id)) {
-      return { ...student, balance: student.balance + amount };
-    }
-    return student;
-  });
+    // Создаем новый массив студентов с обновленными балансами
+    const updatedStudents = students.map((student) => {
+      if (studentsInGroup.some((s) => s.id === student.id)) {
+        return { ...student, balance: student.balance + amount };
+      }
+      return student;
+    });
 
-  // Применяем изменения одним махом
-  setTransactions(prev => [...prev, ...newTransactions]);
-  setStudents(updatedStudents);
-  toast.success(`Начислено ${amount}К всем ученикам`)
-  setShowAddAll(false);
-};
+    // Применяем изменения одним махом
+    setTransactions((prev) => [...prev, ...newTransactions]);
+    setStudents(updatedStudents);
+    toast.success(`Начислено ${amount}К всем ученикам`);
+    playNotification();
+    setShowAddAll(false);
+  };
 
   if (currentGroupId && currentGroup) {
-    
-
     return (
       <div className="min-h-screen bg-gray-900 p-4" data-oid="8k330ln">
         <div className="max-w-4xl mx-auto" data-oid="5731kn-">
           <div
             className="flex items-center justify-between mb-6"
             data-oid="n0.33ma"
-            key="olk-t3Sk">
-
+            key="olk-t3Sk"
+          >
             <Button
               onClick={() => setCurrentGroupId(null)}
               variant="secondary"
-              data-oid="moh7jhq">
-
+              data-oid="moh7jhq"
+            >
               ← Назад
             </Button>
             <h1 className="text-2xl font-bold text-white" data-oid="nfh55sd">
               {currentGroup.name}
             </h1>
             <div className="flex gap-2">
-              <Button onClick={() => setShowAddStudent(true)} data-oid="pn7et30">
+              <Button
+                onClick={() => setShowAddStudent(true)}
+                data-oid="pn7et30"
+              >
                 + Ученик
               </Button>
 
-              <Button onClick={() => setShowAddAll(true) } disabled={students.length < 1} >
+              <Button
+                onClick={() => setShowAddAll(true)}
+                disabled={students.length < 1}
+              >
                 Начислить всем
               </Button>
             </div>
-            
           </div>
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             data-oid="yqf3y._"
-            key="olk-CXuA">
-
-            {currentGroupStudents.map((student) =>
-            <StudentCard
-              key={student.id}
-              student={student}
-              onClick={() => {
-                setSelectedStudent(student);
-                setShowStudentDetails(true);
-              }}
-              data-oid="g8jew3n" />
-
-            )}
+            key="olk-CXuA"
+          >
+            {currentGroupStudents.map((student) => (
+              <StudentCard
+                key={student.id}
+                student={student}
+                onClick={() => {
+                  setSelectedStudent(student);
+                  setShowStudentDetails(true);
+                }}
+                data-oid="g8jew3n"
+              />
+            ))}
           </div>
 
-          {currentGroupStudents.length === 0 &&
-          <div className="text-center text-gray-400 py-12" data-oid="__ww:gx">
+          {currentGroupStudents.length === 0 && (
+            <div className="text-center text-gray-400 py-12" data-oid="__ww:gx">
               <p className="text-lg mb-4" data-oid="gxtk9w3">
                 В группе пока нет учеников
               </p>
               <Button
-              onClick={() => setShowAddStudent(true)}
-              data-oid="94x9_g-">
-
+                onClick={() => setShowAddStudent(true)}
+                data-oid="94x9_g-"
+              >
                 Добавить первого ученика
               </Button>
             </div>
-          }
+          )}
         </div>
 
         <AddStudentModal
           isOpen={showAddStudent}
           onClose={() => setShowAddStudent(false)}
-          onAdd={addStudent}
-          data-oid="64c_cci" />
-
+          onAdd={handleAddStudent}
+          data-oid="64c_cci"
+        />
 
         <StudentDetailsModal
           isOpen={showStudentDetails}
           onClose={() => setShowStudentDetails(false)}
           student={selectedStudent}
           transactions={
-          selectedStudent ? getStudentTransactions(selectedStudent.id) : []
+            selectedStudent ? getStudentTransactions(selectedStudent.id) : []
           }
           onAddTransaction={(amount, description) => {
             if (selectedStudent) {
               addTransaction(selectedStudent.id, amount, description);
               setSelectedStudent((prev) =>
-              prev ? { ...prev, balance: prev.balance + amount } : null
+                prev ? { ...prev, balance: prev.balance + amount } : null
               );
             }
           }}
@@ -256,36 +333,37 @@ const handleApplyToAll = (amount: number, description: string) => {
               setShowStudentDetails(false);
             }
           }}
-          data-oid="iuj2wa1" />
+          data-oid="iuj2wa1"
+        />
 
-          <EditStudentModal
-            isOpen={showEditStudent}
-            onClose={() => setShowEditStudent(false)}
-            onUpdate={(name, birthDate) => {
-              if (editingStudent) {
-                updateStudent(editingStudent.id, name, birthDate);
-                setSelectedStudent((prev) =>
+        <EditStudentModal
+          isOpen={showEditStudent}
+          onClose={() => setShowEditStudent(false)}
+          onUpdate={(name, birthDate) => {
+            if (editingStudent) {
+              updateStudent(editingStudent.id, name, birthDate);
+              setSelectedStudent((prev) =>
                 prev ? { ...prev, name, birthDate } : null
-                );
-              }
-            }}
-            currentName={editingStudent?.name || ""}
-            currentBirthDate={
-            editingStudent?.birthDate ?
-            formatDateForInput(editingStudent.birthDate) :
-            ""
+              );
             }
-            data-oid="_ujuvvz" />
+          }}
+          currentName={editingStudent?.name || ""}
+          currentBirthDate={
+            editingStudent?.birthDate
+              ? formatDateForInput(editingStudent.birthDate)
+              : ""
+          }
+          data-oid="_ujuvvz"
+        />
 
-            <BulkRewardModal
-              isOpen={showAddAll}
-              onClose={() => setShowAddAll(false)}
-              onApplyToAll={handleApplyToAll}
-              data-oid="bulk-reward-modal"
-            />
-
-      </div>);
-
+        <BulkRewardModal
+          isOpen={showAddAll}
+          onClose={() => setShowAddAll(false)}
+          onApplyToAll={handleApplyToAll}
+          data-oid="bulk-reward-modal"
+        />
+      </div>
+    );
   }
 
   return (
@@ -304,73 +382,78 @@ const handleApplyToAll = (amount: number, description: string) => {
           <Button
             onClick={() => setShowCreateGroup(true)}
             size="lg"
-            data-oid="lekm_k-">
-
+            data-oid="lekm_k-"
+          >
             + Создать группу
           </Button>
         </div>
 
         <div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          data-oid="6-qrw-6">
-
-          {groups.map((group) => {
-            const studentsCount = students.filter(
-              (s) => s.groupId === group.id
-            ).length;
-            return (
-              <GroupCard
-                key={group.id}
-                group={group}
-                studentsCount={studentsCount}
-                onClick={() => setCurrentGroupId(group.id)}
-                onEdit={(e) => {
-                  e.stopPropagation();
-                  setEditingGroup(group);
-                  setShowEditGroup(true);
-                }}
-                data-oid="angyy_:" />);
-
-
-          })}
+          data-oid="6-qrw-6"
+        >
+          {loading ? (
+            <div className="col-span-full text-center py-4">Загрузка...</div>
+          ) : groups.length === 0 ? (
+            <div
+              className="col-span-full text-center text-gray-400 py-12"
+              data-oid="vngs_1f"
+            >
+              <p className="text-lg mb-4" data-oid="4mrn9c.">
+                У вас пока нет групп
+              </p>
+              <p className="mb-6" data-oid="iu8mom.">
+                Создайте первую группу для начала работы
+              </p>
+              <Button
+                onClick={() => setShowCreateGroup(true)}
+                data-oid="sl-0kl4"
+              >
+                Создать первую группу
+              </Button>
+            </div>
+          ) : (
+            groups.map((group) => {
+              const studentsCount = students.filter(
+                (s) => s.groupId === group.id
+              ).length;
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  studentsCount={studentsCount}
+                  onClick={() => setCurrentGroupId(group.id)}
+                  onEdit={(e) => {
+                    e.stopPropagation();
+                    setEditingGroup(group);
+                    setShowEditGroup(true);
+                  }}
+                  data-oid="angyy_:"
+                />
+              );
+            })
+          )}
         </div>
-
-        {groups.length === 0 &&
-        <div className="text-center text-gray-400 py-12" data-oid="vngs_1f">
-            <p className="text-lg mb-4" data-oid="4mrn9c.">
-              У вас пока нет групп
-            </p>
-            <p className="mb-6" data-oid="iu8mom.">
-              Создайте первую группу для начала работы
-            </p>
-            <Button onClick={() => setShowCreateGroup(true)} data-oid="sl-0kl4">
-              Создать первую группу
-            </Button>
-          </div>
-        }
       </div>
 
       <CreateGroupModal
         isOpen={showCreateGroup}
         onClose={() => setShowCreateGroup(false)}
-        onCreate={createGroup}
-        data-oid="yf0srr2" />
-
+        onCreate={handleCreateGroup}
+        data-oid="yf0srr2"
+      />
 
       <EditGroupModal
         isOpen={showEditGroup}
         onClose={() => setShowEditGroup(false)}
         onUpdate={(name) => {
           if (editingGroup) {
-            updateGroup(editingGroup.id, name);
+            handleUpdateGroup(editingGroup.id, name);
           }
         }}
         currentName={editingGroup?.name || ""}
-        data-oid="u7u1363" />
-
-
-      
-
-    </div>);
-
+        data-oid="u7u1363"
+      />
+    </div>
+  );
 }
