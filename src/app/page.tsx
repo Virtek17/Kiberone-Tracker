@@ -12,6 +12,7 @@ import { StudentDetailsModal } from "../components/StudentDetailsModal";
 import { EditGroupModal } from "../components/EditGroupModal";
 import { EditStudentModal } from "../components/EditStudentModal";
 import { BulkRewardModal } from "../components/BulkRewardModal";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [groups, setGroups] = useLocalStorage<Group[]>("finance-groups", []);
@@ -39,6 +40,7 @@ export default function Page() {
   const currentGroupStudents = students.filter(
     (s) => s.groupId === currentGroupId
   );
+
 
   const createGroup = (name: string) => {
     const newGroup: Group = {
@@ -151,8 +153,7 @@ const handleApplyToAll = (amount: number, description: string) => {
   // Применяем изменения одним махом
   setTransactions(prev => [...prev, ...newTransactions]);
   setStudents(updatedStudents);
-
-  alert(`Начислено ${amount} К ${studentsInGroup.length} студентам группы!`);
+  toast.success(`Начислено ${amount}К всем ученикам`)
   setShowAddAll(false);
 };
 
@@ -182,7 +183,7 @@ const handleApplyToAll = (amount: number, description: string) => {
                 + Ученик
               </Button>
 
-              <Button onClick={() => setShowAddAll(true) }>
+              <Button onClick={() => setShowAddAll(true) } disabled={students.length < 1} >
                 Начислить всем
               </Button>
             </div>
