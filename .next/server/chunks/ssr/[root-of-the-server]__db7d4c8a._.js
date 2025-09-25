@@ -1,43 +1,4 @@
 module.exports = [
-"[project]/src/hooks/useLocalStorage.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {
-"use strict";
-
-__turbopack_context__.s([
-    "useLocalStorage",
-    ()=>useLocalStorage
-]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
-"use client";
-;
-function useLocalStorage(key, initialValue) {
-    const [storedValue, setStoredValue] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(initialValue);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        try {
-            const item = window.localStorage.getItem(key);
-            if (item) {
-                setStoredValue(JSON.parse(item));
-            }
-        } catch (error) {
-            console.error(`Error reading localStorage key "${key}":`, error);
-        }
-    }, [
-        key
-    ]);
-    const setValue = (value)=>{
-        try {
-            const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        } catch (error) {
-            console.error(`Error setting localStorage key "${key}":`, error);
-        }
-    };
-    return [
-        storedValue,
-        setValue
-    ];
-}
-}),
 "[project]/src/components/ui/Button.tsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
@@ -96,8 +57,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 "use client";
 ;
 const Card = ({ children, className = "", onClick })=>{
-    const baseClasses = "bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg transition-all duration-200";
-    const clickableClasses = onClick ? "hover:bg-gray-750 hover:border-gray-600 hover:shadow-xl cursor-pointer" : "";
+    const baseClasses = "bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg transition-all duration-300";
+    const clickableClasses = onClick ? "hover:bg-gray-750 hover:border-gray-600 hover:shadow-xl cursor-pointer transition" : "";
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: `${baseClasses} ${clickableClasses} ${className}`,
         onClick: onClick,
@@ -275,7 +236,7 @@ const StudentCard = ({ student, onClick })=>{
     // console.log("Предыдущее время года: ", prevSeason);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
         onClick: onClick,
-        className: `hover:scale-105 transition-shadow duration-200 ${shouldHighlight ? 'shadow-xl ring-2 ring-yellow-500' : ''}`,
+        className: `hover:scale-105 transition-all duration-200 ${shouldHighlight ? "shadow-xl ring-2 ring-yellow-500" : ""}`,
         "data-oid": "5zqvef9",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex items-center justify-between",
@@ -291,7 +252,7 @@ const StudentCard = ({ student, onClick })=>{
                             children: student.name
                         }, void 0, false, {
                             fileName: "[project]/src/components/StudentCard.tsx",
-                            lineNumber: 58,
+                            lineNumber: 66,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -303,7 +264,7 @@ const StudentCard = ({ student, onClick })=>{
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/StudentCard.tsx",
-                            lineNumber: 61,
+                            lineNumber: 69,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -311,13 +272,13 @@ const StudentCard = ({ student, onClick })=>{
                             children: studentSeason
                         }, void 0, false, {
                             fileName: "[project]/src/components/StudentCard.tsx",
-                            lineNumber: 64,
+                            lineNumber: 72,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/StudentCard.tsx",
-                    lineNumber: 57,
+                    lineNumber: 65,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -332,23 +293,23 @@ const StudentCard = ({ student, onClick })=>{
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/StudentCard.tsx",
-                        lineNumber: 67,
+                        lineNumber: 75,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/StudentCard.tsx",
-                    lineNumber: 66,
+                    lineNumber: 74,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/StudentCard.tsx",
-            lineNumber: 56,
+            lineNumber: 64,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/StudentCard.tsx",
-        lineNumber: 51,
+        lineNumber: 59,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1694,12 +1655,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts
 const useStudents = ()=>{
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
-    // Полуичть студента
+    // Получить студентов (только не удалённых)
     const fetchStudents = async (groupId)=>{
         setLoading(true);
         setError(null);
         try {
-            let query = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Students').select('*');
+            let query = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Students').select('*').eq('is_deleted', false); // ← только активные
             if (groupId) {
                 query = query.eq('group_id', groupId);
             }
@@ -1708,13 +1669,13 @@ const useStudents = ()=>{
             });
             if (error) throw error;
             return (data || []).map((s)=>({
-                    ...s,
                     id: s.id,
                     name: s.name,
                     groupId: s.group_id,
                     birthDate: s.birth_date,
                     balance: s.balance || 0,
-                    createdAt: s.created_at ? new Date(s.created_at) : new Date()
+                    createdAt: s.created_at ? new Date(s.created_at) : new Date(),
+                    isDeleted: s.is_deleted
                 }));
         } catch (err) {
             setError(err.message);
@@ -1724,7 +1685,7 @@ const useStudents = ()=>{
             setLoading(false);
         }
     };
-    // Создать ученика
+    // Создать студента
     const createStudent = async (name, birthDate, groupId)=>{
         setLoading(true);
         setError(null);
@@ -1733,17 +1694,17 @@ const useStudents = ()=>{
                 name,
                 birth_date: birthDate,
                 group_id: groupId,
-                balance: 0
+                balance: 0,
+                is_deleted: false
             }).select().single();
             if (error) throw error;
             return {
-                ...data,
                 id: data.id,
                 name: data.name,
                 groupId: data.group_id,
                 birthDate: data.birth_date,
                 balance: data.balance || 0,
-                createdAt: new Date(data.created_at)
+                isDeleted: data.is_deleted
             };
         } catch (err) {
             setError(err.message);
@@ -1753,7 +1714,7 @@ const useStudents = ()=>{
             setLoading(false);
         }
     };
-    // Обновить ученика
+    // Обновить студента
     const updateStudent = async (id, name, birthDate)=>{
         setLoading(true);
         setError(null);
@@ -1761,7 +1722,7 @@ const useStudents = ()=>{
             const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Students').update({
                 name,
                 birth_date: birthDate
-            }).eq('id', id);
+            }).eq('id', id).eq('is_deleted', false); // ← нельзя обновлять удалённого
             if (error) throw error;
             return true;
         } catch (err) {
@@ -1772,12 +1733,14 @@ const useStudents = ()=>{
             setLoading(false);
         }
     };
-    // Удалить ученика
+    // "Удалить" студента — пометить как удалённого
     const deleteStudent = async (id)=>{
         setLoading(true);
         setError(null);
         try {
-            const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Students').delete().eq('id', id);
+            const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Students').update({
+                is_deleted: true
+            }).eq('id', id);
             if (error) throw error;
             return true;
         } catch (err) {
@@ -1793,8 +1756,102 @@ const useStudents = ()=>{
         error,
         fetchStudents,
         createStudent,
-        deleteStudent,
-        updateStudent
+        updateStudent,
+        deleteStudent
+    };
+};
+}),
+"[project]/src/hooks/useTransactions.ts [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// src/hooks/useTransactions.ts
+__turbopack_context__.s([
+    "useTransactions",
+    ()=>useTransactions
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/supabase.ts [app-ssr] (ecmascript)");
+;
+;
+const useTransactions = ()=>{
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    // Получить транзакции ученика
+    const fetchTransactions = async (studentId)=>{
+        setLoading(true);
+        setError(null);
+        try {
+            const { data, error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Transactions').select('*').eq('student_id', studentId).order('created_at', {
+                ascending: false
+            });
+            if (error) throw error;
+            return (data || []).map((t)=>({
+                    ...t,
+                    id: t.id,
+                    studentId: t.student_id,
+                    amount: t.amount,
+                    type: t.amount >= 0 ? 'add' : 'subtract',
+                    description: t.description,
+                    timestamp: t.created_at ? new Date(t.created_at) : new Date()
+                }));
+        } catch (err) {
+            setError(err.message);
+            console.error('Ошибка при загрузке транзакций:', err);
+            return null;
+        } finally{
+            setLoading(false);
+        }
+    };
+    // Создать транзакцию
+    const createTransaction = async (studentId, amount, description)=>{
+        setLoading(true);
+        setError(null);
+        try {
+            const { data, error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Transactions').insert({
+                student_id: studentId,
+                amount,
+                description
+            }).select().single();
+            if (error) throw error;
+            return {
+                ...data,
+                id: data.id,
+                studentId: data.student_id,
+                amount: data.amount,
+                type: data.amount >= 0 ? 'add' : 'subtract',
+                description: data.description,
+                timestamp: data.created_at ? new Date(data.created_at) : new Date()
+            };
+        } catch (err) {
+            setError(err.message);
+            console.error('Ошибка при создании транзакции:', err);
+            return null;
+        } finally{
+            setLoading(false);
+        }
+    };
+    // Массовое начисление (опционально — можно сделать отдельно)
+    const bulkCreateTransactions = async (transactionsData)=>{
+        setLoading(true);
+        setError(null);
+        try {
+            const { error } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from('Transactions').insert(transactionsData);
+            if (error) throw error;
+            return true;
+        } catch (err) {
+            setError(err.message);
+            console.error('Ошибка при массовом создании транзакций:', err);
+            return false;
+        } finally{
+            setLoading(false);
+        }
+    };
+    return {
+        loading,
+        error,
+        fetchTransactions,
+        createTransaction,
+        bulkCreateTransactions
     };
 };
 }),
@@ -1808,7 +1865,6 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useLocalStorage$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useLocalStorage.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/ui/Button.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$GroupCard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/GroupCard.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$StudentCard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/StudentCard.tsx [app-ssr] (ecmascript)");
@@ -1822,7 +1878,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toa
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$use$2d$sound$2f$dist$2f$use$2d$sound$2e$esm$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/use-sound/dist/use-sound.esm.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useGroups$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useGroups.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useStudents$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useStudents.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useTransactions$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useTransactions.ts [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/supabase.ts [app-ssr] (ecmascript)");
 "use client";
+;
 ;
 ;
 ;
@@ -1843,7 +1902,8 @@ const NOTIFICATION_SOUND = "/sound/notification.mp3";
 function Page() {
     const [groups, setGroups] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [students, setStudents] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [transactions, setTransactions] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useLocalStorage$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useLocalStorage"])("finance-transactions", []);
+    const [studentTransactions, setStudentTransactions] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [allStudents, setAllStudents] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [currentGroupId, setCurrentGroupId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [selectedStudent, setSelectedStudent] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [showCreateGroup, setShowCreateGroup] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -1856,6 +1916,17 @@ function Page() {
     const [editingStudent, setEditingStudent] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const { fetchGroups, createGroup, updateGroup, loading, error } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useGroups$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useGroups"])();
     const { fetchStudents, createStudent, deleteStudent, updateStudent, loading: studentsLoading } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useStudents$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useStudents"])();
+    const { fetchTransactions, createTransaction, bulkCreateTransactions } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useTransactions$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useTransactions"])();
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const loadAllStudents = async ()=>{
+            // Предполагается, что fetchStudents() без аргументов возвращает всех
+            const data = await fetchStudents(); // ← убедитесь, что хук поддерживает это!
+            if (data) {
+                setAllStudents(data);
+            }
+        };
+        loadAllStudents();
+    }, []);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const loadGroupsFromSupabase = async ()=>{
             const data = await fetchGroups();
@@ -1879,6 +1950,15 @@ function Page() {
         }
     }, [
         currentGroupId
+    ]);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (selectedStudent) {
+            fetchTransactions(selectedStudent.id).then((data)=>{
+                if (data) setStudentTransactions(data);
+            });
+        }
+    }, [
+        selectedStudent
     ]);
     const currentGroup = groups.find((g)=>g.id === currentGroupId);
     const currentGroupStudents = students.filter((s)=>s.groupId === currentGroupId);
@@ -1913,33 +1993,60 @@ function Page() {
             setShowAddStudent(false);
         }
     };
-    const addTransaction = (studentId, amount, description)=>{
-        const newTransaction = {
-            id: Date.now().toString() + Math.random().toString(36),
-            studentId,
+    const addTransaction = async (studentId, amount, description)=>{
+        // 1. Сначала создаём транзакцию
+        const { data: newTransaction, error: txError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from("Transactions").insert({
+            student_id: studentId,
             amount,
-            type: amount >= 0 ? "add" : "subtract",
-            description,
-            timestamp: new Date()
-        };
-        setTransactions((prev)=>[
-                ...prev,
-                newTransaction
-            ]);
-        setStudents((prev)=>prev.map((student)=>student.id === studentId ? {
-                    ...student,
-                    balance: student.balance + amount
-                } : student));
+            description
+        }).select().single();
+        if (txError) {
+            console.error("Ошибка создания транзакции:", txError);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Не удалось создать транзакцию");
+            return;
+        }
+        // 2. Затем обновляем баланс ученика
+        const { error: balError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from("Students").update({
+            balance: selectedStudent.balance + amount
+        }).eq("id", studentId);
+        if (balError) {
+            console.error("Ошибка обновления баланса:", balError);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Транзакция создана, но баланс не обновлён");
+            return;
+        }
+        // 3. Обновляем локальный стейт
+        setStudents((prev)=>prev.map((s)=>s.id === studentId ? {
+                    ...s,
+                    balance: s.balance + amount
+                } : s));
+        if (selectedStudent?.id === studentId) {
+            setStudentTransactions((prev)=>[
+                    {
+                        id: newTransaction.id,
+                        studentId: newTransaction.student_id,
+                        amount: newTransaction.amount,
+                        type: newTransaction.amount >= 0 ? "add" : "subtract",
+                        description: newTransaction.description,
+                        timestamp: newTransaction.created_at ? new Date(newTransaction.created_at) : new Date()
+                    },
+                    ...prev
+                ]);
+        }
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success("Транзакция добавлена");
     };
     const handleDeleteStudent = async (studentId)=>{
         const success = await deleteStudent(studentId);
         if (success) {
-            // Удаляем из локального стейта студентов
+            // Удаляем из локального стейта
             setStudents((prev)=>prev.filter((s)=>s.id !== studentId));
-            // Удаляем связанные транзакции из localStorage
-            setTransactions((prev)=>prev.filter((t)=>t.studentId !== studentId));
+            // Если открыт детальный просмотр — закрываем
+            if (selectedStudent?.id === studentId) {
+                setShowStudentDetails(false);
+                setSelectedStudent(null);
+            }
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success("Ученик удалён");
-            setShowStudentDetails(false);
+        } else {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Не удалось удалить ученика");
         }
     };
     const handleUpdateGroup = async (groupId, name)=>{
@@ -1972,9 +2079,6 @@ function Page() {
             }
         }
     };
-    const getStudentTransactions = (studentId)=>{
-        return transactions.filter((t)=>t.studentId === studentId);
-    };
     // Helper function to format date for input type="date"
     const formatDateForInput = (dateString)=>{
         try {
@@ -1984,35 +2088,36 @@ function Page() {
             return dateString;
         }
     };
-    // 👇 Добавь эту функцию в тело компонента Page
-    const handleApplyToAll = (amount, description)=>{
+    const handleApplyToAll = async (amount, description)=>{
         if (!currentGroupId) return;
         const studentsInGroup = students.filter((s)=>s.groupId === currentGroupId);
-        // Генерируем массив новых транзакций
-        const newTransactions = studentsInGroup.map((student)=>({
-                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                studentId: student.id,
+        // 1. Создаём все транзакции
+        const transactionsData = studentsInGroup.map((student)=>({
+                student_id: student.id,
                 amount,
-                type: amount >= 0 ? "add" : "subtract",
-                description,
-                timestamp: new Date()
+                description
             }));
-        // Создаем новый массив студентов с обновленными балансами
-        const updatedStudents = students.map((student)=>{
-            if (studentsInGroup.some((s)=>s.id === student.id)) {
-                return {
-                    ...student,
-                    balance: student.balance + amount
-                };
-            }
-            return student;
-        });
-        // Применяем изменения одним махом
-        setTransactions((prev)=>[
-                ...prev,
-                ...newTransactions
-            ]);
-        setStudents(updatedStudents);
+        const { error: txError } = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from("Transactions").insert(transactionsData);
+        if (txError) {
+            console.error("Ошибка массового создания транзакций:", txError);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Не удалось создать транзакции");
+            return;
+        }
+        // 2. Обновляем баланс каждого ученика
+        const updates = studentsInGroup.map((student)=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$supabase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["supabase"].from("Students").update({
+                balance: student.balance + amount
+            }).eq("id", student.id));
+        const results = await Promise.all(updates);
+        const hasError = results.some((r)=>r.error);
+        if (hasError) {
+            console.error("Ошибки при обновлении балансов:", results.filter((r)=>r.error));
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].error("Частично не удалось обновить балансы");
+        }
+        // 3. Обновляем локальный стейт
+        setStudents((prev)=>prev.map((s)=>studentsInGroup.some((st)=>st.id === s.id) ? {
+                    ...s,
+                    balance: s.balance + amount
+                } : s));
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toast"].success(`Начислено ${amount}К всем ученикам`);
         playNotification();
         setShowAddAll(false);
@@ -2027,59 +2132,69 @@ function Page() {
                     "data-oid": "5731kn-",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex items-center justify-between mb-6",
+                            className: "flex flex-col gap-7 mb-10",
                             "data-oid": "n0.33ma",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                    onClick: ()=>setCurrentGroupId(null),
-                                    variant: "secondary",
-                                    "data-oid": "moh7jhq",
-                                    children: "← Назад"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 235,
-                                    columnNumber: 13
-                                }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                    className: "text-2xl font-bold text-white",
+                                    className: "text-2xl font-bold text-white text-center",
                                     "data-oid": "nfh55sd",
                                     children: currentGroup.name
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 242,
+                                    lineNumber: 317,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex gap-2",
+                                    className: "flex justify-between",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                            onClick: ()=>setShowAddStudent(true),
-                                            "data-oid": "pn7et30",
-                                            children: "+ Ученик"
+                                            onClick: ()=>setCurrentGroupId(null),
+                                            variant: "secondary",
+                                            "data-oid": "moh7jhq",
+                                            className: "w-max h-max md:row-start-2 md:col-start-1 lg:w-max lg:self-center",
+                                            children: "← Назад"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 246,
+                                            lineNumber: 324,
                                             columnNumber: 15
                                         }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                            onClick: ()=>setShowAddAll(true),
-                                            disabled: students.length < 1,
-                                            children: "Начислить всем"
-                                        }, void 0, false, {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex flex-wrap gap-2 justify-end   md:row-start-2 md:col-start-4 md:col-span-3   lg:justify-end lg:self-center",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                                    onClick: ()=>setShowAddStudent(true),
+                                                    "data-oid": "pn7et30",
+                                                    children: "+ Ученик"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/page.tsx",
+                                                    lineNumber: 338,
+                                                    columnNumber: 17
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$Button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                                    onClick: ()=>setShowAddAll(true),
+                                                    disabled: students.length < 1,
+                                                    children: "Начислить всем"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/page.tsx",
+                                                    lineNumber: 344,
+                                                    columnNumber: 17
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/src/app/page.tsx",
-                                            lineNumber: 253,
+                                            lineNumber: 333,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 245,
+                                    lineNumber: 323,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, "olk-t3Sk", true, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 230,
+                            lineNumber: 312,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2094,18 +2209,18 @@ function Page() {
                                     "data-oid": "g8jew3n"
                                 }, student.id, false, {
                                     fileName: "[project]/src/app/page.tsx",
-                                    lineNumber: 267,
+                                    lineNumber: 359,
                                     columnNumber: 15
                                 }, this))
                         }, "olk-CXuA", false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 261,
+                            lineNumber: 353,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 229,
+                    lineNumber: 311,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AddStudentModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AddStudentModal"], {
@@ -2115,21 +2230,17 @@ function Page() {
                     "data-oid": "64c_cci"
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 280,
+                    lineNumber: 372,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$StudentDetailsModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StudentDetailsModal"], {
                     isOpen: showStudentDetails,
                     onClose: ()=>setShowStudentDetails(false),
                     student: selectedStudent,
-                    transactions: selectedStudent ? getStudentTransactions(selectedStudent.id) : [],
+                    transactions: studentTransactions,
                     onAddTransaction: (amount, description)=>{
                         if (selectedStudent) {
                             addTransaction(selectedStudent.id, amount, description);
-                            setSelectedStudent((prev)=>prev ? {
-                                    ...prev,
-                                    balance: prev.balance + amount
-                                } : null);
                         }
                     },
                     onDeleteStudent: ()=>{
@@ -2147,7 +2258,7 @@ function Page() {
                     "data-oid": "iuj2wa1"
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 287,
+                    lineNumber: 379,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EditStudentModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["EditStudentModal"], {
@@ -2163,7 +2274,7 @@ function Page() {
                     "data-oid": "_ujuvvz"
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 317,
+                    lineNumber: 404,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$BulkRewardModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["BulkRewardModal"], {
@@ -2173,13 +2284,13 @@ function Page() {
                     "data-oid": "bulk-reward-modal"
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 334,
+                    lineNumber: 421,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/page.tsx",
-            lineNumber: 228,
+            lineNumber: 310,
             columnNumber: 7
         }, this);
     }
@@ -2201,7 +2312,7 @@ function Page() {
                                 children: "Учет киберонов"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 348,
+                                lineNumber: 435,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2210,13 +2321,13 @@ function Page() {
                                 children: "Управляйте киберонами группы"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 351,
+                                lineNumber: 438,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 347,
+                        lineNumber: 434,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2229,12 +2340,12 @@ function Page() {
                             children: "+ Создать группу"
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 357,
+                            lineNumber: 444,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 356,
+                        lineNumber: 443,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2245,10 +2356,11 @@ function Page() {
                             children: "Загрузка..."
                         }, void 0, false, {
                             fileName: "[project]/src/app/page.tsx",
-                            lineNumber: 371,
+                            lineNumber: 458,
                             columnNumber: 13
                         }, this) : groups.map((group)=>{
-                            const studentsCount = students.filter((s)=>s.groupId === group.id).length;
+                            console.log("Students: ", allStudents);
+                            const studentsCount = allStudents.filter((s)=>s.groupId == group.id).length;
                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$GroupCard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["GroupCard"], {
                                 group: group,
                                 studentsCount: studentsCount,
@@ -2261,19 +2373,19 @@ function Page() {
                                 "data-oid": "angyy_:"
                             }, group.id, false, {
                                 fileName: "[project]/src/app/page.tsx",
-                                lineNumber: 378,
+                                lineNumber: 466,
                                 columnNumber: 17
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 366,
+                        lineNumber: 453,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 346,
+                lineNumber: 433,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CreateGroupModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CreateGroupModal"], {
@@ -2283,7 +2395,7 @@ function Page() {
                 "data-oid": "yf0srr2"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 396,
+                lineNumber: 484,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EditGroupModal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["EditGroupModal"], {
@@ -2298,17 +2410,17 @@ function Page() {
                 "data-oid": "u7u1363"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.tsx",
-                lineNumber: 403,
+                lineNumber: 491,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 345,
+        lineNumber: 432,
         columnNumber: 5
     }, this);
 }
 }),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__9162b413._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__db7d4c8a._.js.map

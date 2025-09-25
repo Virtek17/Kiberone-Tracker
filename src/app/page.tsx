@@ -17,23 +17,19 @@ import { toast } from "react-toastify";
 import useSound from "use-sound";
 import { useGroups } from "@/hooks/useGroups";
 import { useStudents } from "@/hooks/useStudents";
+import { useTransactions } from "@/hooks/useTransactions";
+import { supabase } from "@/lib/supabase";
 
 const NOTIFICATION_SOUND = "/sound/notification.mp3";
 
 export default function Page() {
-  // const [groups, setGroups] = useLocalStorage<Group[]>("finance-groups", []);
   const [groups, setGroups] = useState<Group[]>([]);
-
-  // const [students, setStudents] = useLocalStorage<Student[]>(
-  //   "finance-students",
-  //   []
-  // );
   const [students, setStudents] = useState<Student[]>([]);
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
-    "finance-transactions",
+
+  const [studentTransactions, setStudentTransactions] = useState<Transaction[]>(
     []
   );
-
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [currentGroupId, setCurrentGroupId] = useState<string | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
@@ -48,8 +44,23 @@ export default function Page() {
   const {
     fetchStudents,
     createStudent,
+    deleteStudent,
+    updateStudent,
     loading: studentsLoading,
   } = useStudents();
+  const { fetchTransactions, createTransaction, bulkCreateTransactions } =
+    useTransactions();
+
+  useEffect(() => {
+    const loadAllStudents = async () => {
+      // Предполагается, что fetchStudents() без аргументов возвращает всех
+      const data = await fetchStudents(); // ← убедитесь, что хук поддерживает это!
+      if (data) {
+        setAllStudents(data);
+      }
+    };
+    loadAllStudents();
+  }, []);
 
   useEffect(() => {
     const loadGroupsFromSupabase = async () => {
@@ -73,7 +84,16 @@ export default function Page() {
     } else {
       setStudents([]); // очищаем при выходе из группы
     }
-  }, [currentGroupId, fetchStudents]);
+  }, [currentGroupId]);
+
+  useEffect(() => {
+    if (selectedStudent) {
+      fetchTransactions(selectedStudent.id).then((data) => {
+        if (data) setStudentTransactions(data);
+      });
+    }
+  }, [selectedStudent]);
+
   const currentGroup = groups.find((g) => g.id === currentGroupId);
   const currentGroupStudents = students.filter(
     (s) => s.groupId === currentGroupId
@@ -83,16 +103,6 @@ export default function Page() {
   const [playNotification] = useSound(NOTIFICATION_SOUND, {
     volume: 0.4,
   });
-
-  // Старое создание группы
-  // const createGroup = (name: string) => {
-  //   const newGroup: Group = {
-  //     id: Date.now().toString(),
-  //     name,
-  //     createdAt: new Date(),
-  //   };
-  //   setGroups((prev) => [...prev, newGroup]);
-  // };
 
   const handleCreateGroup = async (name: string) => {
     const newGroup = await createGroup(name);
@@ -106,19 +116,6 @@ export default function Page() {
     }
   };
 
-  // const addStudent = (name: string, birthDate: string) => {
-  //   if (!currentGroupId) return;
-
-  //   const newStudent: Student = {
-  //     id: Date.now().toString(),
-  //     name,
-  //     birthDate,
-  //     balance: 0,
-  //     groupId: currentGroupId,
-  //   };
-  //   setStudents((prev) => [...prev, newStudent]);
-  // };
-
   const handleAddStudent = async (name: string, birthDate: string) => {
     if (!currentGroupId) return;
 
@@ -131,33 +128,82 @@ export default function Page() {
     }
   };
 
-  const addTransaction = (
+  const addTransaction = async (
     studentId: string,
     amount: number,
     description: string
   ) => {
-    const newTransaction: Transaction = {
-      id: Date.now().toString() + Math.random().toString(36),
-      studentId,
-      amount,
-      type: amount >= 0 ? "add" : "subtract",
-      description,
-      timestamp: new Date(),
-    };
+    // 1. Сначала создаём транзакцию
+    const { data: newTransaction, error: txError } = await supabase
+      .from("Transactions")
+      .insert({
+        student_id: studentId,
+        amount,
+        description,
+      })
+      .select()
+      .single();
 
-    setTransactions((prev) => [...prev, newTransaction]);
+    if (txError) {
+      console.error("Ошибка создания транзакции:", txError);
+      toast.error("Не удалось создать транзакцию");
+      return;
+    }
+
+    // 2. Затем обновляем баланс ученика
+    const { error: balError } = await supabase
+      .from("Students")
+      .update({ balance: selectedStudent!.balance + amount })
+      .eq("id", studentId);
+
+    if (balError) {
+      console.error("Ошибка обновления баланса:", balError);
+      toast.error("Транзакция создана, но баланс не обновлён");
+      return;
+    }
+
+    // 3. Обновляем локальный стейт
     setStudents((prev) =>
-      prev.map((student) =>
-        student.id === studentId
-          ? { ...student, balance: student.balance + amount }
-          : student
+      prev.map((s) =>
+        s.id === studentId ? { ...s, balance: s.balance + amount } : s
       )
     );
+
+    if (selectedStudent?.id === studentId) {
+      setStudentTransactions((prev) => [
+        {
+          id: newTransaction.id,
+          studentId: newTransaction.student_id,
+          amount: newTransaction.amount,
+          type: newTransaction.amount >= 0 ? "add" : "subtract",
+          description: newTransaction.description,
+          timestamp: newTransaction.created_at
+            ? new Date(newTransaction.created_at)
+            : new Date(),
+        },
+        ...prev,
+      ]);
+    }
+
+    toast.success("Транзакция добавлена");
   };
 
-  const deleteStudent = (studentId: string) => {
-    setStudents((prev) => prev.filter((s) => s.id !== studentId));
-    setTransactions((prev) => prev.filter((t) => t.studentId !== studentId));
+  const handleDeleteStudent = async (studentId: string) => {
+    const success = await deleteStudent(studentId);
+    if (success) {
+      // Удаляем из локального стейта
+      setStudents((prev) => prev.filter((s) => s.id !== studentId));
+
+      // Если открыт детальный просмотр — закрываем
+      if (selectedStudent?.id === studentId) {
+        setShowStudentDetails(false);
+        setSelectedStudent(null);
+      }
+
+      toast.success("Ученик удалён");
+    } else {
+      toast.error("Не удалось удалить ученика");
+    }
   };
 
   const handleUpdateGroup = async (groupId: string, name: string) => {
@@ -171,20 +217,26 @@ export default function Page() {
     }
   };
 
-  const updateStudent = (
+  const handleUpdateStudent = async (
     studentId: string,
     name: string,
     birthDate: string
   ) => {
-    setStudents((prev) =>
-      prev.map((student) =>
-        student.id === studentId ? { ...student, name, birthDate } : student
-      )
-    );
-  };
+    const success = await updateStudent(studentId, name, birthDate);
 
-  const getStudentTransactions = (studentId: string) => {
-    return transactions.filter((t) => t.studentId === studentId);
+    if (success) {
+      setStudents((prev) =>
+        prev.map((s) => (s.id === studentId ? { ...s, name, birthDate } : s))
+      );
+
+      toast.success("Ученик обновлен");
+      setShowEditStudent(false);
+      if (selectedStudent?.id === studentId) {
+        setSelectedStudent((prev) =>
+          prev ? { ...prev, name, birthDate } : null
+        );
+      }
+    }
   };
 
   // Helper function to format date for input type="date"
@@ -197,35 +249,57 @@ export default function Page() {
     }
   };
 
-  // 👇 Добавь эту функцию в тело компонента Page
-  const handleApplyToAll = (amount: number, description: string) => {
+  const handleApplyToAll = async (amount: number, description: string) => {
     if (!currentGroupId) return;
 
     const studentsInGroup = students.filter(
       (s) => s.groupId === currentGroupId
     );
 
-    // Генерируем массив новых транзакций
-    const newTransactions: Transaction[] = studentsInGroup.map((student) => ({
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      studentId: student.id,
+    // 1. Создаём все транзакции
+    const transactionsData = studentsInGroup.map((student) => ({
+      student_id: student.id,
       amount,
-      type: amount >= 0 ? "add" : "subtract",
       description,
-      timestamp: new Date(),
     }));
 
-    // Создаем новый массив студентов с обновленными балансами
-    const updatedStudents = students.map((student) => {
-      if (studentsInGroup.some((s) => s.id === student.id)) {
-        return { ...student, balance: student.balance + amount };
-      }
-      return student;
-    });
+    const { error: txError } = await supabase
+      .from("Transactions")
+      .insert(transactionsData);
 
-    // Применяем изменения одним махом
-    setTransactions((prev) => [...prev, ...newTransactions]);
-    setStudents(updatedStudents);
+    if (txError) {
+      console.error("Ошибка массового создания транзакций:", txError);
+      toast.error("Не удалось создать транзакции");
+      return;
+    }
+
+    // 2. Обновляем баланс каждого ученика
+    const updates = studentsInGroup.map((student) =>
+      supabase
+        .from("Students")
+        .update({ balance: student.balance + amount })
+        .eq("id", student.id)
+    );
+
+    const results = await Promise.all(updates);
+    const hasError = results.some((r) => r.error);
+    if (hasError) {
+      console.error(
+        "Ошибки при обновлении балансов:",
+        results.filter((r) => r.error)
+      );
+      toast.error("Частично не удалось обновить балансы");
+    }
+
+    // 3. Обновляем локальный стейт
+    setStudents((prev) =>
+      prev.map((s) =>
+        studentsInGroup.some((st) => st.id === s.id)
+          ? { ...s, balance: s.balance + amount }
+          : s
+      )
+    );
+
     toast.success(`Начислено ${amount}К всем ученикам`);
     playNotification();
     setShowAddAll(false);
@@ -236,34 +310,44 @@ export default function Page() {
       <div className="min-h-screen bg-gray-900 p-4" data-oid="8k330ln">
         <div className="max-w-4xl mx-auto" data-oid="5731kn-">
           <div
-            className="flex items-center justify-between mb-6"
+            className="flex flex-col gap-7 mb-10"
             data-oid="n0.33ma"
             key="olk-t3Sk"
           >
-            <Button
-              onClick={() => setCurrentGroupId(null)}
-              variant="secondary"
-              data-oid="moh7jhq"
+            <h1
+              className="text-2xl font-bold text-white text-center"
+              data-oid="nfh55sd"
             >
-              ← Назад
-            </Button>
-            <h1 className="text-2xl font-bold text-white" data-oid="nfh55sd">
               {currentGroup.name}
             </h1>
-            <div className="flex gap-2">
+            <div className="flex justify-between">
               <Button
-                onClick={() => setShowAddStudent(true)}
-                data-oid="pn7et30"
+                onClick={() => setCurrentGroupId(null)}
+                variant="secondary"
+                data-oid="moh7jhq"
+                className="w-max h-max md:row-start-2 md:col-start-1 lg:w-max lg:self-center"
               >
-                + Ученик
+                ←&nbsp;Назад
               </Button>
 
-              <Button
-                onClick={() => setShowAddAll(true)}
-                disabled={students.length < 1}
+              <div
+                className="flex flex-wrap gap-2 justify-end
+               md:row-start-2 md:col-start-4 md:col-span-3
+               lg:justify-end lg:self-center"
               >
-                Начислить всем
-              </Button>
+                <Button
+                  onClick={() => setShowAddStudent(true)}
+                  data-oid="pn7et30"
+                >
+                  + Ученик
+                </Button>
+                <Button
+                  onClick={() => setShowAddAll(true)}
+                  disabled={students.length < 1}
+                >
+                  Начислить всем
+                </Button>
+              </div>
             </div>
           </div>
           <div
@@ -283,20 +367,6 @@ export default function Page() {
               />
             ))}
           </div>
-
-          {currentGroupStudents.length === 0 && (
-            <div className="text-center text-gray-400 py-12" data-oid="__ww:gx">
-              <p className="text-lg mb-4" data-oid="gxtk9w3">
-                В группе пока нет учеников
-              </p>
-              <Button
-                onClick={() => setShowAddStudent(true)}
-                data-oid="94x9_g-"
-              >
-                Добавить первого ученика
-              </Button>
-            </div>
-          )}
         </div>
 
         <AddStudentModal
@@ -310,20 +380,15 @@ export default function Page() {
           isOpen={showStudentDetails}
           onClose={() => setShowStudentDetails(false)}
           student={selectedStudent}
-          transactions={
-            selectedStudent ? getStudentTransactions(selectedStudent.id) : []
-          }
+          transactions={studentTransactions}
           onAddTransaction={(amount, description) => {
             if (selectedStudent) {
               addTransaction(selectedStudent.id, amount, description);
-              setSelectedStudent((prev) =>
-                prev ? { ...prev, balance: prev.balance + amount } : null
-              );
             }
           }}
           onDeleteStudent={() => {
             if (selectedStudent) {
-              deleteStudent(selectedStudent.id);
+              handleDeleteStudent(selectedStudent.id);
             }
           }}
           onEditStudent={() => {
@@ -341,10 +406,7 @@ export default function Page() {
           onClose={() => setShowEditStudent(false)}
           onUpdate={(name, birthDate) => {
             if (editingStudent) {
-              updateStudent(editingStudent.id, name, birthDate);
-              setSelectedStudent((prev) =>
-                prev ? { ...prev, name, birthDate } : null
-              );
+              handleUpdateStudent(editingStudent.id, name, birthDate);
             }
           }}
           currentName={editingStudent?.name || ""}
@@ -394,28 +456,11 @@ export default function Page() {
         >
           {loading ? (
             <div className="col-span-full text-center py-4">Загрузка...</div>
-          ) : groups.length === 0 ? (
-            <div
-              className="col-span-full text-center text-gray-400 py-12"
-              data-oid="vngs_1f"
-            >
-              <p className="text-lg mb-4" data-oid="4mrn9c.">
-                У вас пока нет групп
-              </p>
-              <p className="mb-6" data-oid="iu8mom.">
-                Создайте первую группу для начала работы
-              </p>
-              <Button
-                onClick={() => setShowCreateGroup(true)}
-                data-oid="sl-0kl4"
-              >
-                Создать первую группу
-              </Button>
-            </div>
           ) : (
             groups.map((group) => {
-              const studentsCount = students.filter(
-                (s) => s.groupId === group.id
+              console.log("Students: ", allStudents);
+              const studentsCount = allStudents.filter(
+                (s) => s.groupId == group.id
               ).length;
               return (
                 <GroupCard

@@ -4,6 +4,7 @@ export interface Student {
   birthDate: string;
   balance: number;
   groupId: string;
+  isDeleted: boolean;
 }
 
 export interface Transaction {

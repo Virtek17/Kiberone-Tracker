@@ -10,10 +10,18 @@ interface StudentCardProps {
 }
 
 const seasons = [
-  "Зима", "Зима", "Весна",
-  "Весна", "Весна", "Лето",
-  "Лето", "Лето", "Осень",
-  "Осень", "Осень", "Зима"
+  "Зима",
+  "Зима",
+  "Весна",
+  "Весна",
+  "Весна",
+  "Лето",
+  "Лето",
+  "Лето",
+  "Осень",
+  "Осень",
+  "Осень",
+  "Зима",
 ];
 
 function getCurrentSeason() {
@@ -29,11 +37,11 @@ function getPrevSeason() {
 
 export const StudentCard: React.FC<StudentCardProps> = ({
   student,
-  onClick
+  onClick,
 }) => {
   const age = Math.floor(
-    (new Date().getTime() - new Date(student.birthDate).getTime()) / (
-      1000 * 60 * 60 * 24 * 365.25) // Учтём високосные года
+    (new Date().getTime() - new Date(student.birthDate).getTime()) /
+      (1000 * 60 * 60 * 24 * 365.25) // Учтём високосные года
   );
 
   const studentSeasonNumber = new Date(student.birthDate).getMonth();
@@ -50,7 +58,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   return (
     <Card
       onClick={onClick}
-      className={`hover:scale-105 transition-shadow duration-200 ${shouldHighlight ? 'shadow-xl ring-2 ring-yellow-500' : ''}`}
+      className={`hover:scale-105 transition-all duration-200 ${shouldHighlight ? "shadow-xl ring-2 ring-yellow-500" : ""}`}
       data-oid="5zqvef9"
     >
       <div className="flex items-center justify-between" data-oid="in_hkcj">
@@ -66,7 +74,8 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         <div className="text-right" data-oid="jth3cvi">
           <div
             className={`text-xl font-bold ${student.balance >= 0 ? "text-green-400" : "text-red-400"}`}
-            data-oid="6zop9xt">
+            data-oid="6zop9xt"
+          >
             {student.balance} К
           </div>
         </div>

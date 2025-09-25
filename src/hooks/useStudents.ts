@@ -1,18 +1,21 @@
-import { useState } from "react"
-import { Group, Student } from "@/types";
+import { useState } from "react";
+import { Student } from "@/types";
 import { supabase } from "@/lib/supabase";
 
 export const useStudents = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Полуичть студента
+  // Получить студентов (только не удалённых)
   const fetchStudents = async (groupId?: string): Promise<Student[] | null> => {
     setLoading(true);
     setError(null);
 
     try {
-      let query = supabase.from('Students').select('*');
+      let query = supabase
+        .from('Students')
+        .select('*')
+        .eq('is_deleted', false); // ← только активные
 
       if (groupId) {
         query = query.eq('group_id', groupId);
@@ -23,13 +26,13 @@ export const useStudents = () => {
       if (error) throw error;
 
       return (data || []).map(s => ({
-        ...s,
         id: s.id,
         name: s.name,
         groupId: s.group_id,
         birthDate: s.birth_date,
         balance: s.balance || 0,
         createdAt: s.created_at ? new Date(s.created_at) : new Date(),
+        isDeleted: s.is_deleted, // ← добавили
       }));
 
     } catch (err: any) {
@@ -41,8 +44,7 @@ export const useStudents = () => {
     }
   };
 
-
-  // Создать ученика
+  // Создать студента
   const createStudent = async (
     name: string,
     birthDate: string,
@@ -58,19 +60,19 @@ export const useStudents = () => {
           birth_date: birthDate,
           group_id: groupId,
           balance: 0,
+          is_deleted: false, // ← явно указываем
         })
         .select()
         .single();
 
       if (error) throw error;
       return {
-        ...data,
         id: data.id,
         name: data.name,
         groupId: data.group_id,
         birthDate: data.birth_date,
         balance: data.balance || 0,
-        createdAt: new Date(data.created_at),
+        isDeleted: data.is_deleted,
       };
     } catch (err: any) {
       setError(err.message);
@@ -81,24 +83,23 @@ export const useStudents = () => {
     }
   };
 
-  // Обновить ученика
+  // Обновить студента
   const updateStudent = async (
     id: string,
     name: string,
     birthDate: string,
-    season?: string
   ): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
       const { error } = await supabase
-        .from('students')
+        .from('Students')
         .update({
           name,
           birth_date: birthDate,
-          season: season || null,
         })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('is_deleted', false); // ← нельзя обновлять удалённого
 
       if (error) throw error;
       return true;
@@ -111,14 +112,14 @@ export const useStudents = () => {
     }
   };
 
-  // Удалить ученика
+  // "Удалить" студента — пометить как удалённого
   const deleteStudent = async (id: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
       const { error } = await supabase
-        .from('students')
-        .delete()
+        .from('Students')
+        .update({ is_deleted: true })
         .eq('id', id);
 
       if (error) throw error;
@@ -132,12 +133,12 @@ export const useStudents = () => {
     }
   };
 
-
   return {
     loading,
     error,
     fetchStudents,
-    createStudent
+    createStudent,
+    updateStudent,
+    deleteStudent,
   };
-
-}
+};
