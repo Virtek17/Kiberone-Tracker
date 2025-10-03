@@ -1,0 +1,33 @@
+: groups.length === 0 ? (
+            <div
+              className="col-span-full text-center text-gray-400 py-12"
+              data-oid="vngs_1f"
+            >
+              <p className="text-lg mb-4" data-oid="4mrn9c.">
+                У вас пока нет групп
+              </p>
+              <p className="mb-6" data-oid="iu8mom.">
+                Создайте первую группу для начала работы
+              </p>
+              <Button
+                onClick={() => setShowCreateGroup(true)}
+                data-oid="sl-0kl4"
+              >
+                Создать первую группу
+              </Button>
+            </div>)
+
+
+{currentGroupStudents.length === 0 && (
+            <div className="text-center text-gray-400 py-12" data-oid="__ww:gx">
+              <p className="text-lg mb-4" data-oid="gxtk9w3">
+                В группе пока нет учеников
+              </p>
+              <Button
+                onClick={() => setShowAddStudent(true)}
+                data-oid="94x9_g-"
+              >
+                Добавить первого ученика
+              </Button>
+            </div>
+          )}
